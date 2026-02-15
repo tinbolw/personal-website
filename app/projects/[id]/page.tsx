@@ -1,6 +1,6 @@
 import { neon } from '@neondatabase/serverless';
 import Tag from '../_components/tag';
-import MainBox from './_components/mainbox';
+import StyledLink from '@/app/_components/styledlink';
 
 export const dynamic = 'force-dynamic';
 
@@ -10,7 +10,6 @@ async function getProject(id: number) {
     return response;
 }
 
-// possible to make it refetch if website visited from anywhere but an internal link?
 export default async function Home({ params }: { params: Promise<{ id: string }> }) {
     return (
         <Page id={Number((await params).id)} />
@@ -20,23 +19,23 @@ export default async function Home({ params }: { params: Promise<{ id: string }>
 async function Page({ id }: { id: number }) {
     if (isNaN(id)) {
         return (
-            <MainBox>
+            <div>
                 Invalid project ID.
-            </MainBox>
+            </div>
         )
     } else {
         const projects = await getProject(id);
         if (projects[0] === undefined) {
             return (
-                <MainBox>
+                <div>
                     Not Found.
-                </MainBox>
+                </div>
             )
         } else {
             const project = projects[0];
             const parsedTags = project.tags?.substring(1, project.tags?.length - 1).split(",");
             return (
-                <MainBox>
+                <div className="flex flex-col items-center justify-center gap-1">
                     <h1 className="text-3xl">{project.title}</h1>
                     <div className="text-xl">
                         {project.about}
@@ -54,7 +53,8 @@ async function Page({ id }: { id: number }) {
                     <div className="bg-zinc-700 p-2 rounded-lg flex-grow">
                         {project.description}
                     </div>
-                </MainBox>
+                    <StyledLink href="/projects" label="Back"/>
+                </div>
             )
         }
     }
